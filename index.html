@@ -1240,19 +1240,22 @@ REELS15.forEach(function(r,i){
     $('.cta',a).addEventListener('click',function(){ openChapter(ad.ch); });
   }
 });
-/* probe videos/ folder for real files */
+/* load videos/ files directly; only fall back to the placeholder on a real error */
 videoEls.forEach(function(v){
-  var probe=document.createElement('video');
-  probe.preload='metadata'; probe.muted=true;
-  probe.onloadedmetadata=function(){ attach(v,v.dataset.src); probe.src=''; };
-  probe.onerror=function(){};
-  probe.src=v.dataset.src;
-});
-function attach(v,src){
-  v.src=src; v.style.display='block';
-  var fb=v.parentElement.querySelector('.fallback'); if(fb) fb.style.display='none';
+  v.addEventListener('loadeddata',function(){ reveal(v); },{once:true});
+  v.addEventListener('error',function(){ hide(v); },{once:true});
+  v.src=v.dataset.src;
   v.load();
+});
+function reveal(v){
+  v.style.display='block';
+  var fb=v.parentElement.querySelector('.fallback'); if(fb) fb.style.display='none';
 }
+function hide(v){
+  v.style.display='none';
+  var fb=v.parentElement.querySelector('.fallback'); if(fb) fb.style.display='grid';
+}
+function attach(v,src){ v.src=src; v.load(); reveal(v); }
 /* import clips: bulk in order, or one slot */
 $('#import-btn').addEventListener('click',function(){ pickTarget=null; $('#file-in').click(); });
 $('#file-in').addEventListener('change',function(e){
