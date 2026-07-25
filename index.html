@@ -533,6 +533,90 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
 .qr{width:150px;height:150px;margin:.5rem auto;image-rendering:pixelated;border:8px solid #fff;border-radius:8px}
 .tick{font-family:var(--serif);color:var(--brass)}
 
+/* ============ auth (login / signup / gate) ============ */
+#auth{position:absolute;inset:0;z-index:var(--z-toast);background:
+  radial-gradient(70% 55% at 80% 12%,rgba(255,59,71,.12),transparent 60%),
+  radial-gradient(55% 55% at 15% 88%,rgba(217,164,98,.09),transparent 60%),#000;
+  display:none;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 2rem) 1.6rem calc(env(safe-area-inset-bottom,0px) + 1.4rem);overflow-y:auto;scrollbar-width:none}
+#auth.on{display:flex}
+#auth::-webkit-scrollbar{display:none}
+#auth .brand{font-family:var(--serif);font-size:2.6rem;letter-spacing:.16em;text-align:center;margin:1.6rem 0 .3rem}
+#auth .brand i{color:var(--ox);font-style:italic}
+#auth .tag{text-align:center;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:2.2rem}
+#auth .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:1.4rem;max-width:360px;width:100%;margin:0 auto}
+#auth h2{font-family:var(--serif);font-size:1.5rem;margin-bottom:.35rem}
+#auth .sub{font-size:.8rem;color:var(--dim);line-height:1.5;margin-bottom:1.2rem}
+#auth .field{margin-bottom:.9rem}
+#auth label{display:block;font-size:.7rem;color:var(--dim);margin-bottom:.35rem;letter-spacing:.04em}
+#auth input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:.75rem .9rem;font-size:.9rem;outline:none;transition:border-color .2s}
+#auth input:focus{border-color:var(--ox)}
+#auth .primary{width:100%;padding:.85rem;border-radius:11px;background:var(--ox);color:#fff;font-weight:600;font-size:.9rem;margin-top:.4rem;transition:transform .15s var(--ease),opacity .2s}
+#auth .primary:active{transform:scale(.98)}
+#auth .primary:disabled{opacity:.5}
+#auth .swap{text-align:center;font-size:.8rem;color:var(--dim);margin-top:1.1rem}
+#auth .swap b{color:var(--ox);cursor:pointer;font-weight:600}
+#auth .err{background:rgba(255,59,71,.12);border:1px solid rgba(255,59,71,.3);color:var(--ox-soft);
+  font-size:.76rem;padding:.6rem .8rem;border-radius:10px;margin-bottom:1rem;line-height:1.45;display:none}
+#auth .err.on{display:block}
+#auth .ok{background:rgba(87,217,163,.1);border:1px solid rgba(87,217,163,.3);color:var(--good);
+  font-size:.76rem;padding:.6rem .8rem;border-radius:10px;margin-bottom:1rem;line-height:1.45;display:none}
+#auth .ok.on{display:block}
+#auth .guest{display:block;margin:1.4rem auto 0;font-size:.8rem;color:var(--ink-70);text-decoration:underline;text-align:center}
+#auth .demo-note{margin-top:1.5rem;font-size:.68rem;color:var(--dim);text-align:center;line-height:1.6;max-width:320px;margin-left:auto;margin-right:auto}
+.avatar-pick{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.3rem 0 .4rem}
+.avatar-pick button{width:46px;height:46px;border-radius:50%;font-family:var(--serif);font-size:1.1rem;
+  background:var(--panel2);border:2px solid var(--line);color:var(--ink-70);transition:.2s}
+.avatar-pick button.on{border-color:var(--ox);color:var(--ox)}
+
+/* login-gate lock over private surfaces */
+.gate{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.75);backdrop-filter:blur(3px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;padding:2rem;text-align:center}
+.gate svg{width:34px;height:34px;stroke:var(--brass);fill:none;stroke-width:1.5}
+.gate b{font-family:var(--serif);font-size:1.3rem}
+.gate p{font-size:.82rem;color:var(--ink-70);line-height:1.55;max-width:28ch}
+.gate button{padding:.7rem 1.4rem;border-radius:999px;background:var(--ox);color:#fff;font-weight:600;font-size:.84rem;margin-top:.3rem}
+
+/* account chip in profile */
+.acct{display:flex;align-items:center;gap:.6rem;margin:.2rem 1rem 0;padding:.7rem .9rem;background:var(--card);
+  border:1px solid var(--line);border-radius:12px}
+.acct .a{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);
+  background:radial-gradient(72% 72% at 30% 25%,#301016,#0b0b0f);border:1px solid var(--line);color:var(--ox-soft)}
+.acct .m{flex:1;min-width:0}
+.acct .m b{display:block;font-size:.82rem}
+.acct .m span{display:block;font-size:.7rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct button{font-size:.74rem;color:var(--ox);font-weight:600}
+
+/* close friends ring + add-yours + repost + poll */
+.story.cf .ring{background:conic-gradient(from 210deg,var(--good),#39b98a,var(--good))}
+.badge-cf{position:absolute;bottom:-2px;right:6px;width:16px;height:16px;border-radius:4px;background:var(--good);
+  display:grid;place-items:center;border:2px solid #000}
+.badge-cf svg{width:9px;height:9px;stroke:#000;fill:none;stroke-width:2.5}
+.st-poll{position:absolute;left:1.2rem;right:1.2rem;bottom:calc(env(safe-area-inset-bottom,0px) + 5.5rem);z-index:6;
+  background:rgba(0,0,0,.4);border-radius:16px;padding:1rem;backdrop-filter:blur(6px)}
+.st-poll .q{font-size:.9rem;font-weight:600;margin-bottom:.7rem;text-align:center}
+.st-poll .opts{display:flex;gap:.6rem}
+.st-poll .opts button{flex:1;padding:.7rem;border-radius:10px;background:rgba(245,245,247,.14);font-size:.82rem;font-weight:600;position:relative;overflow:hidden}
+.st-poll .opts button .bar{position:absolute;left:0;top:0;bottom:0;background:rgba(255,59,71,.4);width:0;transition:width .5s var(--ease);z-index:0}
+.st-poll .opts button span{position:relative;z-index:1}
+.addyours{flex:0 0 auto;width:66px;text-align:center;cursor:pointer}
+.addyours .ring{width:64px;height:64px;margin:0 auto;border-radius:50%;border:2px dashed var(--ox);display:grid;place-items:center}
+.addyours .ring svg{width:22px;height:22px;stroke:var(--ox);fill:none;stroke-width:1.8}
+.addyours b{display:block;margin-top:.35rem;font-size:.62rem;color:var(--ox)}
+.repost-tag{display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:var(--dim);padding:.3rem 1rem 0}
+.repost-tag svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* explore search tabs */
+.ex-tabs{display:flex;gap:.5rem;padding:0 1rem .7rem;overflow-x:auto;scrollbar-width:none}
+.ex-tabs::-webkit-scrollbar{display:none}
+.ex-tabs button{flex:0 0 auto;padding:.4rem .9rem;border-radius:999px;background:var(--panel2);font-size:.74rem;color:var(--ink-70);transition:.2s}
+.ex-tabs button.on{background:var(--ink);color:var(--bg)}
+
+/* reels friends tab */
+.reels-tabs{position:absolute;top:calc(env(safe-area-inset-top,0px) + .7rem);left:50%;translate:-50% 0;z-index:var(--z-side);display:flex;gap:1.2rem}
+.reels-tabs button{font-size:.85rem;font-weight:600;color:rgba(245,245,247,.55);position:relative;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.reels-tabs button.on{color:#fff}
+.reels-tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:2px;background:#fff;border-radius:2px}
+
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -540,6 +624,40 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
 <div id="stage"><div id="phone">
 
   <div id="splash"><div class="sl">RUM<i>O</i>AR</div><small>every great brand starts as a rumour</small></div>
+
+  <!-- ============ AUTH ============ -->
+  <div id="auth">
+    <div class="brand">RUM<i>O</i>AR</div>
+    <div class="tag">members heard first</div>
+    <div class="panel">
+      <div class="err" id="auth-err"></div>
+      <div class="ok" id="auth-ok"></div>
+
+      <div id="view-login">
+        <h2>Welcome back</h2>
+        <div class="sub">Log in to message members and see your circle.</div>
+        <div class="field"><label>Email</label><input id="li-email" type="email" autocomplete="email" placeholder="you@email.com"></div>
+        <div class="field"><label>Password</label><input id="li-pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+        <button class="primary" id="li-btn">Log in</button>
+        <div class="swap">New here? <b id="to-signup">Create account</b></div>
+      </div>
+
+      <div id="view-signup" style="display:none">
+        <h2>Join the mill</h2>
+        <div class="sub">Real account, real messages. Your data stays yours.</div>
+        <div class="field"><label>Choose an avatar</label>
+          <div class="avatar-pick" id="av-pick"></div></div>
+        <div class="field"><label>Username</label><input id="su-user" autocomplete="username" placeholder="arjun.26" maxlength="20"></div>
+        <div class="field"><label>Email</label><input id="su-email" type="email" autocomplete="email" placeholder="you@email.com"></div>
+        <div class="field"><label>Password</label><input id="su-pass" type="password" autocomplete="new-password" placeholder="at least 6 characters"></div>
+        <button class="primary" id="su-btn">Create account</button>
+        <div class="swap">Already a member? <b id="to-login">Log in</b></div>
+      </div>
+    </div>
+
+    <a class="guest" id="guest-btn">Just looking → browse without an account</a>
+    <div class="demo-note" id="auth-demo-note"></div>
+  </div>
 
   <!-- ============ FEED ============ -->
   <section class="screen on" id="feed">
@@ -601,6 +719,7 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
           <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       </div>
       <div class="prof">
+        <div id="acct-host"></div>
         <div class="prof-top">
           <div class="prof-av">R</div>
           <div class="prof-stats">
@@ -688,12 +807,32 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
 
 </div></div>
 <div id="hint">open on your phone for the real thing · arrow keys scroll here</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js" onerror="window.RUMOAR_CONFIG=window.RUMOAR_CONFIG||null"></script>
 <script>
 (function(){
 "use strict";
 var $=function(s,r){return (r||document).querySelector(s);};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
 var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= Supabase auth + backend ================= */
+var CFG=window.RUMOAR_CONFIG||null;
+var supa=null, me=null, SUPA_OK=false;
+try{
+  if(CFG&&CFG.url&&CFG.anonKey&&window.supabase&&CFG.url.indexOf('YOUR_')<0){
+    supa=window.supabase.createClient(CFG.url,CFG.anonKey);
+    SUPA_OK=true;
+  }
+}catch(e){ SUPA_OK=false; }
+function loggedIn(){ return !!me; }
+/* gate: block a private surface unless logged in */
+function requireLogin(what){
+  if(loggedIn()) return true;
+  toast('Log in to '+(what||'do that'));
+  showAuth();
+  return false;
+}
 
 /* ================= generative canvas art (no stock imagery) ================= */
 function paint(cv,seed,mode){
@@ -1012,6 +1151,7 @@ function openDMList(){
   }});
 }
 function editNote(){
+  if(!requireLogin('share a note')) return;
   openSheet('Your note',
     '<div class="frm"><div><label>Share a thought · disappears in 24h</label>'+
     '<input id="note-in" maxlength="60" placeholder="What\'s the rumour?" value="'+esc(NOTES[0].txt)+'"></div>'+
@@ -1906,8 +2046,337 @@ $('#img-in').addEventListener('change',function(e){
   });
 })();
 
-/* first-run hint */
-setTimeout(function(){ toast('New: your echo · the first story is about you'); },3400);
+/* ================= AUTH UI + SESSION ================= */
+var AVATARS=['R','A','K','M','V','S','B','E'];
+(function buildAvatars(){
+  var pick=$('#av-pick'); if(!pick) return;
+  AVATARS.forEach(function(ch,i){
+    var b=document.createElement('button'); b.textContent=ch; if(i===0)b.classList.add('on');
+    b.dataset.av=ch;
+    b.addEventListener('click',function(){ $$('#av-pick button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); });
+    pick.appendChild(b);
+  });
+})();
+function chosenAvatar(){ var b=$('#av-pick button.on'); return b?b.dataset.av:'R'; }
+function authErr(m){ var e=$('#auth-err'); e.textContent=m; e.classList.add('on'); $('#auth-ok').classList.remove('on'); }
+function authOk(m){ var e=$('#auth-ok'); e.textContent=m; e.classList.add('on'); $('#auth-err').classList.remove('on'); }
+function clearAuthMsg(){ $('#auth-err').classList.remove('on'); $('#auth-ok').classList.remove('on'); }
+function showAuth(){ $('#auth').classList.add('on'); }
+function hideAuth(){ $('#auth').classList.remove('on'); }
+$('#to-signup').addEventListener('click',function(){ $('#view-login').style.display='none'; $('#view-signup').style.display='block'; clearAuthMsg(); });
+$('#to-login').addEventListener('click',function(){ $('#view-signup').style.display='none'; $('#view-login').style.display='block'; clearAuthMsg(); });
+$('#guest-btn').addEventListener('click',function(){ hideAuth(); toast('Browsing as guest · log in anytime to message'); });
+
+if(!SUPA_OK){
+  $('#auth-demo-note').innerHTML='Demo mode — accounts aren\'t connected yet, so you can browse everything but not message. '+
+    'Add your Supabase keys in <b>config.js</b> to turn on real login and DMs.';
+}else{
+  $('#auth-demo-note').textContent='Your password is encrypted and stored securely. We never see it.';
+}
+
+/* sign up */
+$('#su-btn').addEventListener('click',function(){
+  if(!SUPA_OK){ authErr('Accounts aren\'t connected yet. See config.js setup, or browse as guest.'); return; }
+  var user=$('#su-user').value.trim(), email=$('#su-email').value.trim(), pass=$('#su-pass').value;
+  if(!user||user.length<2){ authErr('Pick a username (2+ characters).'); return; }
+  if(!email||email.indexOf('@')<0){ authErr('Enter a valid email.'); return; }
+  if(!pass||pass.length<6){ authErr('Password needs at least 6 characters.'); return; }
+  var btn=this; btn.disabled=true; btn.textContent='Creating…';
+  supa.auth.signUp({email:email,password:pass,options:{data:{username:user,avatar:chosenAvatar()}}})
+    .then(function(res){
+      if(res.error){ authErr(res.error.message); return; }
+      /* create profile row */
+      var uid=res.data.user&&res.data.user.id;
+      if(uid){
+        supa.from('profiles').upsert({id:uid,username:user,avatar:chosenAvatar()}).then(function(){});
+      }
+      if(res.data.session){ /* auto logged in */ authOk('Welcome, '+user+'!'); }
+      else { authOk('Account created. If email confirmation is on, check your inbox, then log in.'); 
+        $('#view-signup').style.display='none'; $('#view-login').style.display='block'; }
+    })
+    .catch(function(err){ authErr(err.message||'Something went wrong.'); })
+    .finally(function(){ btn.disabled=false; btn.textContent='Create account'; });
+});
+/* log in */
+$('#li-btn').addEventListener('click',function(){
+  if(!SUPA_OK){ authErr('Accounts aren\'t connected yet. Browse as guest, or set up config.js.'); return; }
+  var email=$('#li-email').value.trim(), pass=$('#li-pass').value;
+  if(!email||!pass){ authErr('Enter your email and password.'); return; }
+  var btn=this; btn.disabled=true; btn.textContent='Logging in…';
+  supa.auth.signInWithPassword({email:email,password:pass})
+    .then(function(res){ if(res.error){ authErr(res.error.message); } })
+    .catch(function(err){ authErr(err.message||'Login failed.'); })
+    .finally(function(){ btn.disabled=false; btn.textContent='Log in'; });
+});
+['li-email','li-pass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('li-btn').click(); }); });
+['su-user','su-email','su-pass'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter') document.getElementById('su-btn').click(); }); });
+
+/* react to auth state */
+function applySession(session){
+  if(session&&session.user){
+    var u=session.user;
+    me={ id:u.id, email:u.email,
+      username:(u.user_metadata&&u.user_metadata.username)||u.email.split('@')[0],
+      avatar:(u.user_metadata&&u.user_metadata.avatar)||'R' };
+    onLogin();
+  }else{
+    me=null; onLogout();
+  }
+}
+if(SUPA_OK){
+  supa.auth.getSession().then(function(res){ applySession(res.data.session); });
+  supa.auth.onAuthStateChange(function(_e,session){ applySession(session); });
+}
+
+function onLogin(){
+  hideAuth();
+  toast('Signed in as '+me.username);
+  /* personalize profile header */
+  var av=$('.prof-av'); if(av) av.textContent=(me.avatar||'R');
+  var h=$('.prof-bio .h'); /* leave brand line; show account chip instead */
+  renderAccountChip();
+  subscribeMessages();
+  loadRealThreads();
+}
+function onLogout(){
+  renderAccountChip();
+  var av=$('.prof-av'); if(av) av.textContent='R';
+}
+function doLogout(){
+  if(SUPA_OK&&supa){ supa.auth.signOut(); }
+  me=null; onLogout(); toast('Logged out'); closeSheet();
+}
+/* account chip in profile */
+function renderAccountChip(){
+  var host=$('#acct-host'); if(!host) return;
+  if(loggedIn()){
+    host.innerHTML='<div class="acct"><div class="a">'+(me.avatar||'R')+'</div>'+
+      '<div class="m"><b>@'+esc(me.username)+'</b><span>'+esc(me.email)+'</span></div>'+
+      '<button id="logout-btn">Log out</button></div>';
+    $('#logout-btn').addEventListener('click',doLogout);
+  }else{
+    host.innerHTML='<div class="acct"><div class="a">?</div>'+
+      '<div class="m"><b>Browsing as guest</b><span>'+(SUPA_OK?'Log in to message members':'Demo mode · no accounts connected')+'</span></div>'+
+      '<button id="login-cta">Log in</button></div>';
+    $('#login-cta').addEventListener('click',showAuth);
+  }
+}
+
+/* ================= real DMs via Supabase ================= */
+var realChan=null, realThreads={};
+function loadRealThreads(){
+  if(!SUPA_OK||!loggedIn()) return;
+  supa.from('messages').select('*').order('created_at',{ascending:true}).limit(500)
+    .then(function(res){
+      if(res.error) return;
+      realThreads={};
+      (res.data||[]).forEach(indexMsg);
+    });
+}
+function indexMsg(m){
+  var other=(m.sender===me.id)?m.recipient:m.sender;
+  (realThreads[other]=realThreads[other]||[]).push(m);
+}
+function subscribeMessages(){
+  if(!SUPA_OK||!loggedIn()) return;
+  if(realChan){ supa.removeChannel(realChan); }
+  realChan=supa.channel('dm')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(payload){
+      var m=payload.new;
+      if(m.recipient===me.id||m.sender===me.id){
+        indexMsg(m);
+        if(m.recipient===me.id&&m.sender!==me.id){ markDot('#btn-dm'); toast('New message'); }
+      }
+    }).subscribe();
+}
+function sendReal(toId,text){
+  if(!SUPA_OK||!loggedIn()) return Promise.reject();
+  return supa.from('messages').insert({sender:me.id,recipient:toId,body:text});
+}
+/* directory of real members to message */
+function openMembersList(){
+  if(!requireLogin('message members')) return;
+  supa.from('profiles').select('*').neq('id',me.id).limit(50).then(function(res){
+    var list=(res.data||[]);
+    var html=list.length?list.map(function(p){
+      return '<div class="dmrow" data-uid="'+p.id+'" data-un="'+esc(p.username)+'"><div class="a">'+(p.avatar||'R')+'</div>'+
+        '<div class="db"><b>@'+esc(p.username)+'</b><span>tap to message</span></div>'+
+        '<svg class="ic sm" viewBox="0 0 24 24" style="stroke:var(--dim)"><path d="M9 6l6 6-6 6"/></svg></div>';
+    }).join(''):'<div class="empty"><b>No other members yet</b>Invite someone to sign up, then message them here live.</div>';
+    openSheet('Members',html,{onopen:function(b){
+      $$('.dmrow',b).forEach(function(r){ r.addEventListener('click',function(){ openRealThread(r.dataset.uid,r.dataset.un); }); });
+    }});
+  });
+}
+function openRealThread(uid,uname){
+  var msgs=(realThreads[uid]||[]);
+  var html=msgs.map(function(m){ return '<div class="bub '+(m.sender===me.id?'me':'them')+'">'+esc(m.body)+'</div>'; }).join('')
+    ||'<div class="empty"><b>Say hi to @'+esc(uname)+'</b>Your messages are private, end to end through your accounts.</div>';
+  openSheet('@'+uname,html,{onopen:function(b){
+    var bar=document.createElement('div'); bar.className='cbar'; bar.style.display='flex';
+    bar.innerHTML='<input placeholder="Message @'+esc(uname)+'…"><button disabled>Send</button>';
+    b.parentElement.appendChild(bar);
+    var inp=$('input',bar),snd=$('button',bar);
+    inp.addEventListener('input',function(){ snd.disabled=!inp.value.trim(); });
+    inp.addEventListener('keydown',function(e){ if(e.key==='Enter'&&inp.value.trim()) snd.click(); });
+    snd.addEventListener('click',function(){
+      var v=inp.value.trim(); if(!v) return;
+      var mine=document.createElement('div'); mine.className='bub me'; mine.textContent=v; 
+      var empty=$('.empty',b); if(empty) empty.remove();
+      b.appendChild(mine); b.scrollTop=b.scrollHeight; inp.value=''; snd.disabled=true;
+      sendReal(uid,v).then(function(res){ if(res&&res.error) toast('Send failed: '+res.error.message); });
+    });
+    var obs=new MutationObserver(function(){ if(!sheet.classList.contains('on')){ bar.remove(); obs.disconnect(); } });
+    obs.observe(sheet,{attributes:true,attributeFilter:['class']});
+    /* live append */
+    var live=supa.channel('t-'+uid).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(pl){
+      var m=pl.new; if((m.sender===uid&&m.recipient===me.id)){
+        var el=document.createElement('div'); el.className='bub them'; el.textContent=m.body;
+        var empty2=$('.empty',b); if(empty2) empty2.remove();
+        b.appendChild(el); b.scrollTop=b.scrollHeight;
+      }
+    }).subscribe();
+    var obs2=new MutationObserver(function(){ if(!sheet.classList.contains('on')){ supa.removeChannel(live); obs2.disconnect(); } });
+    obs2.observe(sheet,{attributes:true,attributeFilter:['class']});
+    b.scrollTop=b.scrollHeight;
+  }});
+}
+
+/* ================= gate the existing DM button ================= */
+(function(){
+  var dm=$('#btn-dm'); if(!dm) return;
+  var fresh=dm.cloneNode(true); dm.parentNode.replaceChild(fresh,dm);
+  fresh.addEventListener('click',function(){
+    fresh.classList.remove('has');
+    if(loggedIn()){
+      /* real members + the flavor threads */
+      openMembersRoot();
+    }else{
+      if(SUPA_OK){ requireLogin('message members'); }
+      else { toast('Messaging needs accounts · connect Supabase in config.js'); showGateSheet(); }
+    }
+  });
+})();
+function openMembersRoot(){
+  /* combine: notes row + real members + brand threads */
+  supa.from('profiles').select('*').neq('id',me.id).limit(50).then(function(res){
+    var list=res.data||[];
+    var members=list.map(function(p){
+      return '<div class="dmrow" data-uid="'+p.id+'" data-un="'+esc(p.username)+'"><div class="a">'+(p.avatar||'R')+'</div>'+
+        '<div class="db"><b>@'+esc(p.username)+'</b><span>tap to message · live</span></div></div>';
+    }).join('');
+    var brand=DM_THREADS.map(function(d,i){
+      return '<div class="dmrow" data-dm="'+i+'"><div class="a">'+d.a+'</div>'+
+        '<div class="db"><b>'+d.name+'</b><span>'+d.last+'</span></div></div>';
+    }).join('');
+    var html=notesHTML()+
+      '<div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:.6rem .2rem .3rem">Members</div>'+
+      (members||'<div style="font-size:.78rem;color:var(--dim);padding:.3rem .2rem 1rem">No other members yet — invite someone to sign up.</div>')+
+      '<div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:.8rem .2rem .3rem">Rooms</div>'+brand;
+    openSheet('Messages',html,{onopen:function(b){
+      $$('.dmrow[data-uid]',b).forEach(function(r){ r.addEventListener('click',function(){ openRealThread(r.dataset.uid,r.dataset.un); }); });
+      $$('.dmrow[data-dm]',b).forEach(function(r){ r.addEventListener('click',function(){ openThread(+r.dataset.dm); }); });
+      $$('.note',b).forEach(function(r){ r.addEventListener('click',function(){ var n=NOTES[+r.dataset.note]; if(n.mine) editNote(); else toast(n.name+': “'+n.txt+'”'); }); });
+    }});
+  });
+}
+function showGateSheet(){
+  openSheet('Messages','<div class="empty"><b>Log in to message</b>Messaging uses real accounts. Connect Supabase (see config.js) to turn this on. Until then, everything else in the app works — scroll freely.</div>');
+}
+
+/* ================= NEW IG FEATURES ================= */
+/* Close Friends ring on a story + Add Yours + poll are visual; wire lightly */
+(function(){
+  var st=$$('.story'); if(st[3]) st[3].classList.add('cf'); /* mark arjun as close friend */
+  /* add-yours ring at end of stories row */
+  var row=$('#stories'); if(row){
+    var ay=document.createElement('button'); ay.className='addyours';
+    ay.innerHTML='<div class="ring"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div><b>Add yours</b>';
+    ay.addEventListener('click',function(){
+      openSheet('Add yours','<div class="frm"><div><label>Prompt: “what made you buy your first nice thing?”</label>'+
+        '<input id="ay-in" placeholder="Your answer…"></div><button class="save" id="ay-save">Add to the thread</button></div>',
+        {onopen:function(b){ $('#ay-save',b).addEventListener('click',function(){ var v=$('#ay-in',b).value.trim(); closeSheet(); toast(v?'Added to “Add yours”':'Cancelled'); }); }});
+    });
+    row.appendChild(ay);
+  }
+})();
+/* Repost tag on the reposted arjun post (post index 3) */
+(function(){
+  var posts=$$('#posts .post'); 
+  posts.forEach(function(el){
+    var p=POSTS[+el.dataset.idx];
+    if(p&&p.cap&&p.cap.indexOf('reposted by rumoar')>=0){
+      var tag=document.createElement('div'); tag.className='repost-tag';
+      tag.innerHTML='<svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 12v-2a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 12v2a4 4 0 0 1-4 4H3"/></svg> rumoar reposted';
+      el.insertBefore(tag,el.firstChild);
+    }
+  });
+})();
+/* Repost action in post menu */
+var _openPostMenu=openPostMenu;
+openPostMenu=function(p,post){
+  openSheet('',[
+    '<button class="mitem" data-m="repost"><svg class="ic sm" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 12v-2a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 12v2a4 4 0 0 1-4 4H3"/></svg><span>Repost</span><small>share to your feed</small></button>',
+    '<button class="mitem" data-m="save"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 21 12 16.5 5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5z"/></svg><span>Save</span></button>',
+    '<button class="mitem" data-m="collection"><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg><span>Save to collection</span></button>',
+    '<button class="mitem" data-m="chap"><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/></svg><span>Open this chapter</span></button>',
+    '<button class="mitem warn" data-m="hide"><svg class="ic sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg><span>Not interested</span></button>'
+  ].join(''),{onopen:function(b){
+    $$('.mitem',b).forEach(function(mi){ mi.addEventListener('click',function(){
+      var m=mi.dataset.m; closeSheet();
+      if(m==='repost'){ toast('Reposted to your feed'); }
+      if(m==='save'){ var sb=$('.save-btn',post); if(sb&&!sb.classList.contains('saved')) sb.click(); else toast('Already saved'); }
+      if(m==='collection'){ openCollections(post); }
+      if(m==='chap'){ openChapter(p.ch); }
+      if(m==='hide'){ post.style.display='none'; toast('Hidden'); }
+    }); });
+  }});
+};
+/* saved collections */
+var COLLECTIONS={'The drop':[], 'Proof':[], 'Craft':[]};
+function openCollections(post){
+  var html=Object.keys(COLLECTIONS).map(function(name){
+    return '<button class="mitem" data-c="'+esc(name)+'"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 21 12 16.5 5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5z"/></svg><span>'+name+'</span><small>'+COLLECTIONS[name].length+' saved</small></button>';
+  }).join('')+'<button class="mitem" data-c="__new"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>New collection…</span></button>';
+  openSheet('Save to collection',html,{onopen:function(b){
+    $$('.mitem',b).forEach(function(mi){ mi.addEventListener('click',function(){
+      var c=mi.dataset.c; 
+      if(c==='__new'){ closeSheet(); toast('Collections are per-session in demo'); return; }
+      COLLECTIONS[c].push(post.dataset.idx); closeSheet(); toast('Saved to “'+c+'”');
+      var sb=$('.save-btn',post); if(sb&&!sb.classList.contains('saved')) sb.click();
+    }); });
+  }});
+}
+/* Explore search tabs */
+(function(){
+  var host=$('#explore .searchbar'); if(!host) return;
+  var tabs=document.createElement('div'); tabs.className='ex-tabs';
+  ['For you','Market','Consumer','Brand','Risks','Craft'].forEach(function(t,i){
+    var b=document.createElement('button'); if(i===0)b.classList.add('on'); b.textContent=t;
+    b.addEventListener('click',function(){ $$('.ex-tabs button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+      var q=t==='For you'?'':t.toLowerCase();
+      var si=$('#search-in'); si.value=q==='' ?'':t; si.dispatchEvent(new Event('input')); });
+    tabs.appendChild(b);
+  });
+  host.after(tabs);
+})();
+/* Reels Friends tab */
+(function(){
+  var reels=$('#reels'); if(!reels) return;
+  var t=document.createElement('div'); t.className='reels-tabs';
+  t.innerHTML='<button class="on" data-rt="all">For you</button><button data-rt="friends">Friends</button>';
+  reels.appendChild(t);
+  $$('button',t).forEach(function(b){ b.addEventListener('click',function(){
+    $$('.reels-tabs button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+    if(b.dataset.rt==='friends'){ if(!requireLogin('see Friends reels')){ $$('.reels-tabs button')[0].classList.add('on'); b.classList.remove('on'); return; } toast('Friends reels · what your circle is watching'); }
+  }); });
+})();
+/* notif grouping already visual; add a grouped header */
+
+/* ================= boot ================= */
+renderAccountChip();
+setTimeout(function(){ if(SUPA_OK&&!loggedIn()){ showAuth(); } },1600);
+setTimeout(function(){ toast(SUPA_OK?'Members heard first · log in to message':'New: your echo · the first story is about you'); },3400);
 dwellSwitch('Feed');
 })();
 </script>
