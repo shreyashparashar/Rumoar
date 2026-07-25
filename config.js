@@ -13,6 +13,6 @@
    (browse everything, no login, no messaging).
    ============================================================ */
 window.RUMOAR_CONFIG = {
-  url:     "YOUR_SUPABASE_PROJECT_URL",   // e.g. https://abcdxyz.supabase.co
-  anonKey: "YOUR_SUPABASE_ANON_PUBLIC_KEY"
+  url:     "https://kicwzyhutnmrdjeytnqv.supabase.co",   // e.g. https://abcdxyz.supabase.co
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpY3d6eWh1dG5tcmRqZXl0bnF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5ODIzOTIsImV4cCI6MjEwMDU1ODM5Mn0.hvHlouD0mkSdyHRLuphiEaLc8bGJWIPjDK2WtRpkJBM"
 };
