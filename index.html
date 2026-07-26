@@ -617,6 +617,36 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
 .reels-tabs button.on{color:#fff}
 .reels-tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:2px;background:#fff;border-radius:2px}
 
+/* story upload + real story viewer media */
+.st-stage video.st-media,.st-stage img.st-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#000}
+.uploading{position:absolute;left:1rem;right:1rem;bottom:calc(env(safe-area-inset-bottom,0px) + 1rem);z-index:8;
+  background:rgba(11,11,15,.95);border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem;display:none}
+.uploading.on{display:block}
+.uploading b{font-size:.8rem;display:block;margin-bottom:.5rem}
+.uploading .track{height:5px;border-radius:3px;background:rgba(245,245,247,.14);overflow:hidden}
+.uploading .track i{display:block;height:100%;width:0;background:var(--ox);transition:width .3s}
+.mystory-ring .ring{background:conic-gradient(from 210deg,var(--brass),#e7c58a,var(--brass))!important}
+.mystory-ring .in{position:relative}
+.mystory-ring .plus{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;
+  background:var(--ox);border:2px solid #000;display:grid;place-items:center}
+.mystory-ring .plus svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3}
+
+/* video call (Daily) */
+#call{position:absolute;inset:0;z-index:var(--z-toast);background:#0a0a0c;display:none;flex-direction:column}
+#call.on{display:flex}
+#call .call-head{display:flex;align-items:center;gap:.7rem;padding:calc(env(safe-area-inset-top,0px) + .8rem) 1rem .6rem;
+  background:linear-gradient(180deg,rgba(0,0,0,.7),transparent);position:absolute;top:0;left:0;right:0;z-index:3}
+#call .call-head b{font-family:var(--serif);font-size:1rem;flex:1}
+#call .call-head .room{font-family:var(--mono);font-size:.66rem;color:var(--brass)}
+#call .call-head button{color:#fff;padding:.3rem}
+#call-frame{flex:1;position:absolute;inset:0;border:0;width:100%;height:100%}
+#call .call-fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:2rem;z-index:2}
+#call .call-fallback h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:.6rem}
+#call .call-fallback p{font-size:.82rem;color:var(--dim);line-height:1.55;margin-bottom:1.2rem;max-width:30ch}
+#call .end{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 1.6rem);left:50%;translate:-50% 0;z-index:5}
+#call .end button{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#e23;border:0}
+#call .end button svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2}
+
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -657,6 +687,23 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
 
     <a class="guest" id="guest-btn">Just looking → browse without an account</a>
     <div class="demo-note" id="auth-demo-note"></div>
+  </div>
+
+  <!-- ============ VIDEO CALL ============ -->
+  <div id="call">
+    <div class="call-head">
+      <b>RUMOAR call</b><span class="room" id="call-room"></span>
+      <button id="call-min" aria-label="Minimize"><svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div id="call-mount"></div>
+    <div class="call-fallback" id="call-fallback">
+      <div>
+        <h3>Video calling isn't connected yet</h3>
+        <p>Add your free Daily.co room URL in config.js to turn on group video calls. Until then, everything else works.</p>
+        <button class="pillbtn pri" id="call-close2">Got it</button>
+      </div>
+    </div>
+    <div class="end"><button id="call-end" aria-label="Leave call"><svg viewBox="0 0 24 24"><path d="M3 6c6-4 12-4 18 0l-2.5 3.5c-2-1-3.5-1-3.5-3M21 6l-2.5 3.5"/><path d="M16 16l5 5M21 16l-5 5"/></svg></button></div>
   </div>
 
   <!-- ============ FEED ============ -->
@@ -773,7 +820,9 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
       <div class="st-reply"><input id="st-reply-in" placeholder="Reply to story…" aria-label="Reply to story"></div>
     </div>
     <div class="st-note" id="st-note"></div>
+    <div class="uploading" id="story-up"><b>Uploading…</b><div class="track"><i></i></div></div>
   </div>
+  <input type="file" id="story-in" accept="image/*,video/*" hidden>
 
   <!-- coach marks -->
   <div class="coach" id="coach"><div class="cc">
@@ -808,6 +857,7 @@ body.light .m-title,body.light .m-sub,body.light .slide .big,body.light .fb-in h
 </div></div>
 <div id="hint">open on your phone for the real thing · arrow keys scroll here</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@daily-co/daily-js"></script>
 <script src="config.js" onerror="window.RUMOAR_CONFIG=window.RUMOAR_CONFIG||null"></script>
 <script>
 (function(){
@@ -1227,6 +1277,27 @@ var STORY_ACCTS=[
  {id:'mirror',name:'the mirror',av:'M',chs:[8,9]},
  {id:'whyme',name:'why me',av:'VIII',chs:[10,11]}];
 var stWrap=$('#stories');
+/* "Your story" ring first — tap to upload (real) */
+(function(){
+  var d=document.createElement('button'); d.className='story mystory-ring'; d.id='mystory';
+  d.setAttribute('aria-label','Add to your story');
+  d.innerHTML='<div class="ring"><div class="in" id="mystory-in">R<span class="plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></div></div><b>Your story</b>';
+  d.addEventListener('click',function(){
+    if(!requireLogin('post a story')) return;
+    if(MEMBER_STORIES[me.id]&&MEMBER_STORIES[me.id].length){
+      /* has active story: view it, long-press handled by menu */
+      openSheet('Your story',[
+        '<button class="mitem" data-m="view"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg><span>View your story</span></button>',
+        '<button class="mitem" data-m="add"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Add another</span></button>'
+      ].join(''),{onopen:function(b){ $$('.mitem',b).forEach(function(mi){ mi.addEventListener('click',function(){
+        var m=mi.dataset.m; closeSheet(); if(m==='view') openMemberStory(me.id); else $('#story-in').click(); }); }); }});
+    } else { $('#story-in').click(); }
+  });
+  stWrap.appendChild(d);
+})();
+$('#story-in').addEventListener('change',function(e){
+  var f=(e.target.files||[])[0]; if(f) uploadStory(f); e.target.value='';
+});
 STORY_ACCTS.forEach(function(a,i){
   var d=document.createElement('button'); d.className='story'+(a.echo?' echo':''); d.dataset.st=i;
   d.setAttribute('aria-label',a.name+' story');
@@ -1236,6 +1307,19 @@ STORY_ACCTS.forEach(function(a,i){
   d.addEventListener('click',function(){ openStory(i); d.classList.add('seen'); });
   stWrap.appendChild(d);
 });
+/* inject real member story rings (from uploads) after the brand ones */
+function renderStoryRings(){
+  $$('.story.member-story').forEach(function(el){ el.remove(); });
+  var myAv=$('#mystory-in'); if(myAv&&loggedIn()) myAv.firstChild.textContent=(me.avatar||'R');
+  Object.keys(MEMBER_STORIES).forEach(function(uid){
+    if(loggedIn()&&uid===me.id) return; /* mine shown via Your story ring */
+    var rows=MEMBER_STORIES[uid]; if(!rows||!rows.length) return;
+    var d=document.createElement('button'); d.className='story member-story';
+    d.innerHTML='<div class="ring"><div class="in">'+(rows[0].avatar||'R')+'</div></div><b>@'+esc(rows[0].username)+'</b>';
+    d.addEventListener('click',function(){ openMemberStory(uid); d.classList.add('seen'); });
+    stWrap.appendChild(d);
+  });
+}
 
 /* viewer engine */
 var stEl=$('#story'),stCv=$('#st-canvas'),stTxt=$('#st-txt'),stProg=$('#st-progress'),
@@ -1289,11 +1373,29 @@ function openStory(i){
   $('.st-reply').style.display=showReact?'flex':'none';
   stIdx=0; stEl.classList.add('on'); showSlide();
 }
+function clearStoryMedia(){
+  $$('.st-media').forEach(function(el){ try{ if(el.tagName==='VIDEO'){ el.pause(); el.src=''; } }catch(e){} el.remove(); });
+}
 function showSlide(){
   if(stIdx>=stSlides.length){ closeStory(); return; }
   var s=stSlides[stIdx];
-  paint(stCv,s.seed,s.mode);
-  stTxt.innerHTML='<div class="k">'+s.k+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p>'+(s.live?'<div class="live">'+s.live+'</div>':'');
+  clearStoryMedia();
+  if(s.media){
+    /* real uploaded story: image or video */
+    var stage=$('.st-stage');
+    if(s.kind==='video'){
+      var v=document.createElement('video'); v.className='st-media'; v.src=s.media;
+      v.autoplay=true; v.playsInline=true; v.muted=false; v.setAttribute('playsinline','');
+      stage.insertBefore(v,stage.firstChild); v.play().catch(function(){});
+    }else{
+      var img=document.createElement('img'); img.className='st-media'; img.src=s.media;
+      stage.insertBefore(img,stage.firstChild);
+    }
+    stTxt.innerHTML=s.cap?'<p>'+esc(s.cap)+'</p>':'';
+  }else{
+    paint(stCv,s.seed,s.mode);
+    stTxt.innerHTML='<div class="k">'+s.k+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p>'+(s.live?'<div class="live">'+s.live+'</div>':'');
+  }
   $$('#st-progress i b').forEach(function(b,k){
     b.style.transition='none';
     b.style.transform=k<stIdx?'scaleX(1)':'scaleX(0)';
@@ -1981,6 +2083,7 @@ $('#img-in').addEventListener('change',function(e){
   var fresh=cb.cloneNode(true); cb.parentNode.replaceChild(fresh,cb);
   fresh.addEventListener('click',function(){
     openSheet('Create',[
+      '<button class="mitem" data-m="story"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 2"/><path d="M12 8v8M8 12h8"/></svg><span>Add to your story</span><small>photo or video · gone in 24h</small></button>',
       '<button class="mitem" data-m="clips"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M10 9v6l5-3z"/></svg><span>Add my clips</span><small>fills the 15 reels in order</small></button>',
       '<button class="mitem" data-m="photos"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.8"/><path d="M21 16l-5-5-6 6"/></svg><span>Add photos to feed</span><small>fills the posts in order</small></button>',
       '<button class="mitem" data-m="one"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg><span>Fill one reel slot</span><small>pick the slot, then the clip</small></button>',
@@ -1988,6 +2091,7 @@ $('#img-in').addEventListener('change',function(e){
     ].join(''),{onopen:function(b){
       $$('.mitem',b).forEach(function(mi){ mi.addEventListener('click',function(){
         var m=mi.dataset.m; closeSheet();
+        if(m==='story'){ if(requireLogin('post a story')) $('#story-in').click(); }
         if(m==='clips'){ goTab('reels'); pickTarget=null; $('#file-in').click(); }
         if(m==='photos'){ goTab('feed'); $('#img-in').click(); }
         if(m==='one'){ goTab('reels'); toast('Scroll to a slot and tap “Choose this clip”'); }
@@ -2135,8 +2239,22 @@ function onLogin(){
   var av=$('.prof-av'); if(av) av.textContent=(me.avatar||'R');
   var h=$('.prof-bio .h'); /* leave brand line; show account chip instead */
   renderAccountChip();
+  ensureProfile();   /* <-- guarantees this user is findable by others */
   subscribeMessages();
   loadRealThreads();
+  loadStories();
+}
+/* Make sure a profiles row exists for the logged-in user EVERY time.
+   Without this, anyone who confirmed email later (or whose signup
+   upsert failed) would be invisible and unmessageable. */
+function ensureProfile(){
+  if(!SUPA_OK||!loggedIn()) return;
+  supa.from('profiles').upsert(
+    { id:me.id, username:me.username, avatar:(me.avatar||'R') },
+    { onConflict:'id' }
+  ).then(function(res){
+    if(res&&res.error){ console.warn('profile upsert failed:',res.error.message); }
+  });
 }
 function onLogout(){
   renderAccountChip();
@@ -2193,6 +2311,111 @@ function sendReal(toId,text){
   if(!SUPA_OK||!loggedIn()) return Promise.reject();
   return supa.from('messages').insert({sender:me.id,recipient:toId,body:text});
 }
+
+/* ================= STORIES: upload to Storage, 24h expiry, auto-purge ================= */
+var STORY_TTL=24*60*60*1000;
+function uploadStory(file){
+  if(!requireLogin('post a story')) return;
+  if(!SUPA_OK){ toast('Connect Supabase to post stories'); return; }
+  var isVideo=/^video\//.test(file.type);
+  var box=$('#story-up'); box.classList.add('on');
+  $('#story-up b').textContent='Uploading your story…'; $('#story-up i').style.width='15%';
+  var ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+  var path=me.id+'/'+Date.now()+'.'+ext;
+  supa.storage.from('stories').upload(path,file,{contentType:file.type,upsert:false})
+    .then(function(res){
+      $('#story-up i').style.width='70%';
+      if(res.error){ throw res.error; }
+      var pub=supa.storage.from('stories').getPublicUrl(path);
+      var url=pub.data.publicUrl;
+      return supa.from('stories').insert({user_id:me.id,username:me.username,avatar:me.avatar||'R',
+        path:path,url:url,kind:isVideo?'video':'image'});
+    })
+    .then(function(res){
+      if(res&&res.error) throw res.error;
+      $('#story-up i').style.width='100%';
+      setTimeout(function(){ box.classList.remove('on'); },700);
+      toast('Story posted · gone in 24h');
+      loadStories();
+    })
+    .catch(function(err){ box.classList.remove('on'); toast('Story failed: '+(err.message||'error')); });
+}
+var MEMBER_STORIES={}; /* uid -> [rows] */
+function loadStories(){
+  if(!SUPA_OK) return;
+  var cutoff=new Date(Date.now()-STORY_TTL).toISOString();
+  supa.from('stories').select('*').gt('created_at',cutoff).order('created_at',{ascending:true}).limit(200)
+    .then(function(res){
+      if(res.error) return;
+      MEMBER_STORIES={};
+      (res.data||[]).forEach(function(row){ (MEMBER_STORIES[row.user_id]=MEMBER_STORIES[row.user_id]||[]).push(row); });
+      renderStoryRings();
+      purgeExpiredClientSide(); /* opportunistic cleanup when app is used */
+    });
+}
+function openMemberStory(uid){
+  var rows=MEMBER_STORIES[uid]||[]; if(!rows.length) return;
+  echo.storiesWatched++;
+  stSlides=rows.map(function(r){ return {media:r.url,kind:r.kind,cap:('@'+r.username)}; });
+  stWho.textContent='@'+rows[0].username;
+  stAv.textContent=rows[0].avatar||'R';
+  stNote.textContent='tap to advance · 24h story';
+  stProg.innerHTML=stSlides.map(function(){return '<i><b></b></i>';}).join('');
+  $('#st-react').style.display='flex'; $('.st-reply').style.display='flex';
+  stIdx=0; stEl.classList.add('on'); showSlide();
+}
+/* opportunistic purge: delete rows (and files) older than 24h.
+   Real deletion of files is also handled by the scheduled Edge Function,
+   but this ensures cleanup even if the free project's cron is asleep. */
+function purgeExpiredClientSide(){
+  if(!SUPA_OK||!loggedIn()) return;
+  var cutoff=new Date(Date.now()-STORY_TTL).toISOString();
+  supa.from('stories').select('id,path,user_id').lt('created_at',cutoff).limit(50).then(function(res){
+    if(res.error||!res.data||!res.data.length) return;
+    var mine=res.data.filter(function(r){ return r.user_id===me.id; }); /* RLS: can only delete own */
+    if(!mine.length) return;
+    var paths=mine.map(function(r){ return r.path; });
+    supa.storage.from('stories').remove(paths).then(function(){});
+    supa.from('stories').delete().in('id',mine.map(function(r){return r.id;})).then(function(){});
+  });
+}
+
+/* ================= VIDEO CALLS (Daily.co group rooms) ================= */
+var callFrame=null, callActive=false;
+function dailyReady(){ return !!(CFG&&CFG.dailyRoom&&CFG.dailyRoom.indexOf('YOUR_')<0&&window.DailyIframe); }
+function startCall(roomName,label){
+  if(!requireLogin('start a call')) return;
+  var overlay=$('#call'); overlay.classList.add('on');
+  $('#call-room').textContent=label||'';
+  if(!dailyReady()){
+    $('#call-fallback').style.display='grid';
+    return;
+  }
+  $('#call-fallback').style.display='none';
+  /* one shared room for the group; ?room= lets everyone land together */
+  var base=CFG.dailyRoom.replace(/\/+$/,'');
+  var url=base; /* single room for the whole mill (group call) */
+  try{
+    if(callFrame){ try{callFrame.destroy();}catch(e){} callFrame=null; }
+    callFrame=window.DailyIframe.createFrame($('#call-mount'),{
+      iframeStyle:{position:'absolute',inset:'0',width:'100%',height:'100%',border:'0'},
+      showLeaveButton:false,showFullscreenButton:false
+    });
+    callFrame.join({url:url,userName:(me?me.username:'guest')});
+    callActive=true;
+  }catch(e){ $('#call-fallback').style.display='grid'; }
+}
+function endCall(){
+  callActive=false;
+  if(callFrame){ try{callFrame.leave();}catch(e){} try{callFrame.destroy();}catch(e){} callFrame=null; }
+  $('#call-mount').innerHTML='';
+  $('#call').classList.remove('on');
+}
+$('#call-end').addEventListener('click',endCall);
+$('#call-min').addEventListener('click',endCall);
+$('#call-close2').addEventListener('click',endCall);
+
+
 /* directory of real members to message */
 function openMembersList(){
   if(!requireLogin('message members')) return;
@@ -2209,11 +2432,25 @@ function openMembersList(){
   });
 }
 function openRealThread(uid,uname){
-  var msgs=(realThreads[uid]||[]);
-  var html=msgs.map(function(m){ return '<div class="bub '+(m.sender===me.id?'me':'them')+'">'+esc(m.body)+'</div>'; }).join('')
-    ||'<div class="empty"><b>Say hi to @'+esc(uname)+'</b>Your messages are private, end to end through your accounts.</div>';
-  openSheet('@'+uname,html,{onopen:function(b){
-    var bar=document.createElement('div'); bar.className='cbar'; bar.style.display='flex';
+  var callBtn='<button class="mitem" data-call="1" style="border-bottom:1px solid var(--line-soft)"><svg class="ic sm" viewBox="0 0 24 24" style="stroke:var(--good)"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg><span>Video call @'+esc(uname)+'</span><small>shared room</small></button>';
+  openSheet('@'+uname,callBtn+'<div id="thread-msgs"><div class="empty"><b>Loading…</b></div></div>',{onopen:function(b){
+    var cb=$('[data-call]',b); if(cb) cb.addEventListener('click',function(){ closeSheet(); startCall('dm-'+uid,'@'+uname); });
+    var mount=$('#thread-msgs',b);
+    function renderMsgs(msgs){
+      mount.innerHTML = msgs.length
+        ? msgs.map(function(m){ return '<div class="bub '+(m.sender===me.id?'me':'them')+'">'+esc(m.body)+'</div>'; }).join('')
+        : '<div class="empty"><b>Say hi to @'+esc(uname)+'</b>Your messages are private, through your accounts.</div>';
+      b.scrollTop=b.scrollHeight;
+    }
+    /* fetch the real conversation both directions */
+    supa.from('messages').select('*')
+      .or('and(sender.eq.'+me.id+',recipient.eq.'+uid+'),and(sender.eq.'+uid+',recipient.eq.'+me.id+')')
+      .order('created_at',{ascending:true}).limit(500)
+      .then(function(res){
+        if(res.error){ mount.innerHTML='<div class="empty"><b>Couldn\'t load messages</b>'+esc(res.error.message)+'</div>'; return; }
+        realThreads[uid]=res.data||[]; renderMsgs(realThreads[uid]);
+      });
+    var bar=document.createElement('div'); bar.className='cbar'; bar.id='thread-cbar'; bar.style.display='flex';
     bar.innerHTML='<input placeholder="Message @'+esc(uname)+'…"><button disabled>Send</button>';
     b.parentElement.appendChild(bar);
     var inp=$('input',bar),snd=$('button',bar);
@@ -2221,24 +2458,23 @@ function openRealThread(uid,uname){
     inp.addEventListener('keydown',function(e){ if(e.key==='Enter'&&inp.value.trim()) snd.click(); });
     snd.addEventListener('click',function(){
       var v=inp.value.trim(); if(!v) return;
-      var mine=document.createElement('div'); mine.className='bub me'; mine.textContent=v; 
-      var empty=$('.empty',b); if(empty) empty.remove();
-      b.appendChild(mine); b.scrollTop=b.scrollHeight; inp.value=''; snd.disabled=true;
+      var empty=$('.empty',mount); if(empty) empty.remove();
+      var mine=document.createElement('div'); mine.className='bub me'; mine.textContent=v;
+      mount.appendChild(mine); b.scrollTop=b.scrollHeight; inp.value=''; snd.disabled=true;
       sendReal(uid,v).then(function(res){ if(res&&res.error) toast('Send failed: '+res.error.message); });
     });
     var obs=new MutationObserver(function(){ if(!sheet.classList.contains('on')){ bar.remove(); obs.disconnect(); } });
     obs.observe(sheet,{attributes:true,attributeFilter:['class']});
-    /* live append */
-    var live=supa.channel('t-'+uid).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(pl){
-      var m=pl.new; if((m.sender===uid&&m.recipient===me.id)){
+    /* live incoming */
+    var live=supa.channel('t-'+uid+'-'+Date.now()).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},function(pl){
+      var m=pl.new; if(m.sender===uid&&m.recipient===me.id){
+        var empty2=$('.empty',mount); if(empty2) empty2.remove();
         var el=document.createElement('div'); el.className='bub them'; el.textContent=m.body;
-        var empty2=$('.empty',b); if(empty2) empty2.remove();
-        b.appendChild(el); b.scrollTop=b.scrollHeight;
+        mount.appendChild(el); b.scrollTop=b.scrollHeight;
       }
     }).subscribe();
     var obs2=new MutationObserver(function(){ if(!sheet.classList.contains('on')){ supa.removeChannel(live); obs2.disconnect(); } });
     obs2.observe(sheet,{attributes:true,attributeFilter:['class']});
-    b.scrollTop=b.scrollHeight;
   }});
 }
 
@@ -2259,25 +2495,51 @@ function openRealThread(uid,uname){
 })();
 function openMembersRoot(){
   /* combine: notes row + real members + brand threads */
-  supa.from('profiles').select('*').neq('id',me.id).limit(50).then(function(res){
+  supa.from('profiles').select('*').neq('id',me.id).order('username',{ascending:true}).limit(100).then(function(res){
+    if(res.error){
+      openSheet('Messages','<div class="empty"><b>Couldn\'t load members</b>'+esc(res.error.message)+
+        '<br><br>If this says something about "profiles" or permissions, re-run supabase-setup.sql in the Supabase SQL editor.</div>');
+      return;
+    }
     var list=res.data||[];
-    var members=list.map(function(p){
+    function rowHTML(p){
       return '<div class="dmrow" data-uid="'+p.id+'" data-un="'+esc(p.username)+'"><div class="a">'+(p.avatar||'R')+'</div>'+
         '<div class="db"><b>@'+esc(p.username)+'</b><span>tap to message · live</span></div></div>';
-    }).join('');
+    }
+    var members=list.map(rowHTML).join('');
     var brand=DM_THREADS.map(function(d,i){
       return '<div class="dmrow" data-dm="'+i+'"><div class="a">'+d.a+'</div>'+
         '<div class="db"><b>'+d.name+'</b><span>'+d.last+'</span></div></div>';
     }).join('');
     var html=notesHTML()+
-      '<div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:.6rem .2rem .3rem">Members</div>'+
-      (members||'<div style="font-size:.78rem;color:var(--dim);padding:.3rem .2rem 1rem">No other members yet — invite someone to sign up.</div>')+
+      '<div class="searchbar" style="margin:.2rem 0 .8rem"><svg class="ic sm" viewBox="0 0 24 24" style="stroke:var(--dim)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'+
+      '<input id="member-search" type="search" placeholder="Search members by username" aria-label="Search members"></div>'+
+      '<button class="mitem" id="group-call" style="border-bottom:1px solid var(--line-soft)"><svg class="ic sm" viewBox="0 0 24 24" style="stroke:var(--good)"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg><span>Start group video call</span><small>The Rumour Mill room</small></button>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .2rem .3rem">'+
+        '<span style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)">Members ('+list.length+')</span>'+
+        '<button id="members-refresh" style="font-size:.7rem;color:var(--ox);font-weight:600">Refresh</button></div>'+
+      '<div id="members-list">'+(members||'<div style="font-size:.78rem;color:var(--dim);padding:.3rem .2rem 1rem">No other members yet — invite someone to sign up, then tap Refresh.</div>')+'</div>'+
       '<div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:.8rem .2rem .3rem">Rooms</div>'+brand;
     openSheet('Messages',html,{onopen:function(b){
-      $$('.dmrow[data-uid]',b).forEach(function(r){ r.addEventListener('click',function(){ openRealThread(r.dataset.uid,r.dataset.un); }); });
+      $('#group-call',b).addEventListener('click',function(){ closeSheet(); startCall('mill','The Rumour Mill'); });
+      $('#members-refresh',b).addEventListener('click',function(){ closeSheet(); setTimeout(openMembersRoot,120); });
+      var srch=$('#member-search',b);
+      if(srch) srch.addEventListener('input',function(){
+        var q=this.value.trim().toLowerCase();
+        var filtered=q?list.filter(function(p){return (p.username||'').toLowerCase().indexOf(q)>=0;}):list;
+        $('#members-list',b).innerHTML=filtered.length?filtered.map(rowHTML).join('')
+          :'<div style="font-size:.78rem;color:var(--dim);padding:.3rem .2rem 1rem">No member matches “'+esc(q)+'”.</div>';
+        bindMemberRows(b);
+      });
+      bindMemberRows(b);
       $$('.dmrow[data-dm]',b).forEach(function(r){ r.addEventListener('click',function(){ openThread(+r.dataset.dm); }); });
       $$('.note',b).forEach(function(r){ r.addEventListener('click',function(){ var n=NOTES[+r.dataset.note]; if(n.mine) editNote(); else toast(n.name+': “'+n.txt+'”'); }); });
     }});
+  });
+}
+function bindMemberRows(b){
+  $$('#members-list .dmrow[data-uid]',b).forEach(function(r){
+    r.onclick=function(){ openRealThread(r.dataset.uid,r.dataset.un); };
   });
 }
 function showGateSheet(){
